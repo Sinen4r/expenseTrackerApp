@@ -1,22 +1,30 @@
 package com.example.expensetracker.ui.theme.login
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.expensetracker.navigation.Screen
 import com.example.expensetracker.ui.theme.components.PrimaryButton
 import com.example.expensetracker.ui.theme.components.SimpleTextField
 
@@ -24,6 +32,7 @@ import com.example.expensetracker.ui.theme.components.SimpleTextField
 fun LoginScreen(navController: NavController, viewModel: UserInputViewModel = viewModel()) {
     val emailState by viewModel.emailState
     val passwordState by viewModel.passwordState
+    val loginState by viewModel.loginState
 
     Column(
         modifier = Modifier
@@ -58,24 +67,75 @@ fun LoginScreen(navController: NavController, viewModel: UserInputViewModel = vi
         )
         Spacer(modifier = Modifier.height(26.dp))
 
-        PrimaryButton("Log In",onClick = {}) {
-            viewModel.performLogin()
-            if (viewModel.validateLogin()) {
-                // Navigate to home screen or dashboard on successful login
-                navController.navigate("home") {
-                    popUpTo("login") { inclusive = true }
-                }
+        // Show buttons or loading indicator based on loginState
+        when (loginState) {
+            is LoginState.Loading -> {
+                CircularProgressIndicator(color = Color.White)
+            }
+            else -> {
+                PrimaryButton(
+                    text = "Log In",
+                    onClick = {
+                        viewModel.performLogin() // Login action only on button press
+                    }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "or",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                PrimaryButton(
+                    text = "Sign Up",
+                    onClick =
+                        { navController.navigate(Screen.signup.route) } // Signup action only on button press
+
+                )
             }
         }
-        Text("or", color = Color.White)
-        PrimaryButton("Sign Up", onClick = {}) {
-            viewModel.performSignup()
-            if (viewModel.validateLogin()) {
-                // Navigate to signup confirmation or home screen
-                navController.navigate("home") {
-                    popUpTo("login") { inclusive = true }
+
+        // Handle login/signup result
+        when (loginState) {
+            is LoginState.Success -> {
+                LaunchedEffect(loginState) {
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                    viewModel.resetLoginState()
                 }
             }
+            is LoginState.Error -> {
+                Snackbar(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    action = {
+                        Text(
+                            text = "Dismiss",
+                            color = Color.White,
+                            modifier = Modifier.clickable { viewModel.resetLoginState() }
+                        )
+                    }
+                ) {
+                    Text(
+                        text = (loginState as LoginState.Error).message,
+                        color = Color.White
+                    )
+                }
+            }
+            else -> {}
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    LoginScreen(
+        navController = rememberNavController(),
+        viewModel = UserInputViewModel().apply {
+            onEmailChange("test@example.com")
+            onPasswordChange("password123")
+        }
+    )
 }

@@ -3,7 +3,20 @@ package com.example.expensetracker.ui.theme.login
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.expensetracker.ui.theme.components.TextFieldState
+
+data class TextFieldState(
+    val text: String = "",
+    val error: String? = null
+) {
+    fun isValid(): Boolean = text.isNotEmpty() && error == null
+}
+
+sealed class LoginState {
+    object Idle : LoginState()
+    object Loading : LoginState()
+    data class Success(val message: String) : LoginState()
+    data class Error(val message: String) : LoginState()
+}
 
 class UserInputViewModel : ViewModel() {
     private val _emailState = mutableStateOf(TextFieldState())
@@ -11,6 +24,9 @@ class UserInputViewModel : ViewModel() {
 
     private val _passwordState = mutableStateOf(TextFieldState())
     val passwordState: State<TextFieldState> = _passwordState
+
+    private val _loginState = mutableStateOf<LoginState>(LoginState.Idle)
+    val loginState: State<LoginState> = _loginState
 
     fun onEmailChange(newValue: String) {
         val emailRegex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
@@ -27,29 +43,31 @@ class UserInputViewModel : ViewModel() {
         )
     }
 
-    fun validateLogin(): Boolean {
-        return emailState.value.isValid() && passwordState.value.isValid()
+    private fun validateInputs(): Boolean {
+        // Re-validate to ensure errors are up-to-date
+        onEmailChange(_emailState.value.text)
+        onPasswordChange(_passwordState.value.text)
+        return _emailState.value.isValid() && _passwordState.value.isValid()
     }
 
     fun performLogin() {
-        if (validateLogin()) {
-            // Perform login (e.g., call an API or authenticate with a backend)
-            // For now, just log or handle success
-            println("Login successful with email: ${emailState.value.text}")
+        _loginState.value = LoginState.Loading
+        if (validateInputs()) {
+            // Simulate API call (replace with actual backend call)
+            try {
+                Thread.sleep(1000) // Simulate network delay
+                _loginState.value = LoginState.Success("Login successful with email: ${_emailState.value.text}")
+            } catch (e: Exception) {
+                _loginState.value = LoginState.Error("Login failed: ${e.message}")
+            }
         } else {
-            // Update states to show errors if not already set
-            onEmailChange(emailState.value.text)
-            onPasswordChange(passwordState.value.text)
+            _loginState.value = LoginState.Error("Please fix the errors above")
         }
     }
 
-    fun performSignup() {
-        if (validateLogin()) {
-            // Perform signup (e.g., register user in backend)
-            println("Signup successful with email: ${emailState.value.text}")
-        } else {
-            onEmailChange(emailState.value.text)
-            onPasswordChange(passwordState.value.text)
-        }
+
+
+    fun resetLoginState() {
+        _loginState.value = LoginState.Idle
     }
 }
