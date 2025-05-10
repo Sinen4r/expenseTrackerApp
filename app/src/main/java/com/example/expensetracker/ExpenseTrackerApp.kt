@@ -22,7 +22,7 @@ import com.example.expensetracker.ui.theme.transaction.AddTransactionScreen
 import com.example.expensetracker.ui.theme.home.HomeScreen
 import com.example.expensetracker.ui.theme.login.LoginScreen
 import com.example.expensetracker.ui.theme.profile.profileScreen
-import com.example.expensetracker.ui.theme.signup.signupScreen
+import com.example.expensetracker.ui.theme.signup.SignupScreen
 import com.example.expensetracker.ui.theme.stats.StatsScreen
 
 
@@ -65,7 +65,7 @@ fun ExpenseTrackerApp() {
             composable(Screen.Login.route) { LoginScreen(navController) }
             composable(Screen.AddTransaction.route) { AddTransactionScreen(navController) }
             composable(Screen.stats.route){StatsScreen(navController)}
-            composable(Screen.signup.route){ signupScreen(navController) }
+            composable(Screen.signup.route){ SignupScreen(navController) }
             composable(Screen.profile.route){profileScreen(navController)}
 
         }
