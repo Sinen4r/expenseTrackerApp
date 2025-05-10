@@ -1,5 +1,6 @@
 package com.example.expensetracker
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -7,9 +8,13 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.expensetracker.navigation.BottomNavBar
 import com.example.expensetracker.navigation.Screen
@@ -22,23 +27,38 @@ import com.example.expensetracker.ui.theme.stats.StatsScreen
 
 
 // ExpenseTrackerApp.kt
+private const val TAG = "NavigationUtils"
+
 @Composable
 fun ExpenseTrackerApp() {
+
     val navController = rememberNavController()
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
+
+    // Make this a Composable-aware calculation
+    val isAuthRoute = remember(currentRoute) {
+        currentRoute in listOf(Screen.Login.route, Screen.signup.route)
+    }
+
 
     Scaffold(
-        bottomBar = { BottomNavBar(navController) },
-        floatingActionButton = {
+        bottomBar =  {if (!isAuthRoute) {
+            BottomNavBar(navController)
+        }
+        },
+        floatingActionButton = { if (!isAuthRoute) {
             FloatingActionButton(onClick = {
                 navController.navigate(Screen.AddTransaction.route)
             }) {
-                Icon(Icons.Default.Add, "Add Transaction")
+                    Icon(Icons.Default.Add, "Add Transaction")
+                }
             }
         }
-    ) { padding ->
+    ){ padding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Home.route,
+            startDestination = Screen.Login.route,
             modifier = Modifier.padding(padding)
         ) {
             composable(Screen.Home.route) { HomeScreen(navController) }

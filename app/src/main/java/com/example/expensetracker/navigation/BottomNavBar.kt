@@ -34,7 +34,7 @@ fun BottomNavBar(navController: NavController) {
             label = "Caledner"
         ) ,
         BottomNavItem(
-            route = Screen.Login.route,
+            route = Screen.profile.route,
             icon = Icons.Default.Person,
             label = "Profile"
         ) ,
