@@ -1,6 +1,7 @@
 package com.example.expensetracker.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
@@ -25,7 +26,7 @@ fun BottomNavBar(navController: NavController) {
         ),
         BottomNavItem(
             route = Screen.stats.route,
-            icon = Icons.Default.Home,
+            icon = Icons.Default.Analytics,
             label = "Statistics"
         ),
         BottomNavItem(

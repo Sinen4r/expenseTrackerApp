@@ -24,13 +24,14 @@ import com.example.expensetracker.ui.theme.login.LoginScreen
 import com.example.expensetracker.ui.theme.profile.profileScreen
 import com.example.expensetracker.ui.theme.signup.SignupScreen
 import com.example.expensetracker.ui.theme.stats.StatsScreen
+import com.example.expensetracker.ui.theme.stats.StatsViewModel
 
 
 // ExpenseTrackerApp.kt
 private const val TAG = "NavigationUtils"
 
 @Composable
-fun ExpenseTrackerApp() {
+fun ExpenseTrackerApp(viewModel: StatsViewModel) {
 
     val navController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
@@ -64,7 +65,7 @@ fun ExpenseTrackerApp() {
             composable(Screen.Home.route) { HomeScreen(navController) }
             composable(Screen.Login.route) { LoginScreen(navController) }
             composable(Screen.AddTransaction.route) { AddTransactionScreen(navController) }
-            composable(Screen.stats.route){StatsScreen(navController)}
+            composable(Screen.stats.route){StatsScreen(navController,viewModel)}
             composable(Screen.signup.route){ SignupScreen(navController) }
             composable(Screen.profile.route){profileScreen(navController)}
 
