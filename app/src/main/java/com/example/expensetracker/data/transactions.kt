@@ -10,5 +10,5 @@ data class Transaction(
     val type: String, // "income" or "expense"
     val category: String,
     val date: Long ,// Store as timestamp
-    val description: String
+    val description: String=""
 )

@@ -33,6 +33,13 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
 
         return dao.getTransactionsBetweenDates(startDate, endDate)
     }
+    fun addTransaction(transaction: Transaction) {
+        viewModelScope.launch {
+            dao.insert(transaction)
+        }
+    }
+
+
     fun getIncomeTransactions(): Flow<List<Transaction>> {
         return dao.getTransactionsByType("income")
     }

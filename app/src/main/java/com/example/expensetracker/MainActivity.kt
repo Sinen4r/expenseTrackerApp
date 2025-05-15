@@ -20,6 +20,7 @@ class MainActivity : ComponentActivity() {
     private val viewModel: StatsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContent {
             ExpenseTrackerTheme { // Your theme (defined in Theme.kt)

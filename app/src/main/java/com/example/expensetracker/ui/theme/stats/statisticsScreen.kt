@@ -139,7 +139,7 @@ fun StatsScreen(navController: NavController, viewModel: StatsViewModel) {
 @Composable
 fun TransactionList(transactions: List<Transaction>) {
     LazyColumn {
-        items(transactions) { transaction ->
+        items(transactions.asReversed()) { transaction ->
             TransactionItem(transaction)
             Divider(color = Color.LightGray, thickness = 0.5.dp)
         }

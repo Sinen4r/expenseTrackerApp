@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.ExpenseTracker" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- App's main theme -->
+    <style name="Theme.ExpenseTracker" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Your usual app styles -->
+    </style>
+
+    <!-- Splash screen theme -->
+    <style name="Theme.ExpenseTracker.Splash" parent="Theme.SplashScreen">
+        <!-- Background color -->
+        <item name="android:windowSplashScreenBackground">@color/black</item>
+
+        <!-- Your logo (use a non-vector asset if needed) -->
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/logocrop</item>
+
+        <!-- These are the key attributes to remove circular cropping -->
+        <item name="android:windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+        <item name="android:windowSplashScreenBrandingImage">@drawable/descr</item>
+
+        <!-- Animation duration -->
+        <item name="android:windowSplashScreenAnimationDuration">200</item>
+
+        <!-- Theme after splash -->
+        <item name="postSplashScreenTheme">@style/Theme.ExpenseTracker</item>
+    </style>
+
 </resources>

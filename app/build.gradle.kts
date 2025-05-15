@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.expensetracker"
-        minSdk = 24
+        minSdk = 31
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -70,5 +70,7 @@ dependencies {
     kapt ("androidx.room:room-compiler:2.6.0")
     implementation ("androidx.room:room-ktx:2.6.0")
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation ("androidx.core:core-splashscreen:1.0.1")
+
 
 }

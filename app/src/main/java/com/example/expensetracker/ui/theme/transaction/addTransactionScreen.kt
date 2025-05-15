@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Menu
@@ -14,15 +15,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.expensetracker.data.Transaction
 import com.example.expensetracker.ui.theme.components.PrimaryButton
 import com.example.expensetracker.ui.theme.components.SimpleTextField
+import com.example.expensetracker.ui.theme.stats.StatsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTransactionScreen(navController: NavController) {
+fun AddTransactionScreen(navController: NavController,viewModel: StatsViewModel) {
     val context = LocalContext.current
     val stripePattern = Color(0xFFFFEEEE)
 
@@ -122,7 +126,9 @@ fun AddTransactionScreen(navController: NavController) {
                 value = valueText,
                 onValueChange = { valueText = it },
                 placeholder = "Value",
-                label = ""
+                label = "",
+                keyboardType = KeyboardType.Number
+
             )
 
             // Category Dropdown
@@ -191,15 +197,22 @@ fun AddTransactionScreen(navController: NavController) {
                         return@PrimaryButton
                     }
 
-                    // Add transaction to database or perform necessary actions
-                    // For example:
-                    // val transaction = Transaction(
-                    //     type = selectedTransactionType,
-                    //     value = valueText.toDoubleOrNull() ?: 0.0,
-                    //     category = selectedCategory,
-                    //     description = descriptionText
-                    // )
-                    // viewModel.addTransaction(transaction)
+                    val amount = valueText.toFloatOrNull() ?: run {
+                        Toast.makeText(context, "Please enter a valid number", Toast.LENGTH_SHORT).show()
+                        return@PrimaryButton
+                    }
+
+                    // Create transaction object
+                    val transaction = Transaction(
+                        amount = amount,
+                        type = if (selectedTransactionType == "Income") "income" else "expense",
+                        category = selectedCategory,
+                        date = System.currentTimeMillis(),
+                        description = descriptionText
+                    )
+
+                    // Save to database using ViewModel
+                    viewModel.addTransaction(transaction)
 
                     Toast.makeText(context, "Transaction added successfully", Toast.LENGTH_SHORT).show()
 
@@ -207,8 +220,8 @@ fun AddTransactionScreen(navController: NavController) {
                     valueText = ""
                     descriptionText = ""
 
-                    // Optionally navigate back
-                    // navController.popBackStack()
+                    // Navigate back
+                    navController.popBackStack()
                 }
             )
 
