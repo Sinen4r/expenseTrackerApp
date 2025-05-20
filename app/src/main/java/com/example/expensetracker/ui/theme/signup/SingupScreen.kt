@@ -33,6 +33,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.util.Log
+
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -111,6 +113,7 @@ fun SignupScreen(
                         authViewModel.signUp(email, password, name) { success, message ->
                             isLoading = false
                             if (success) {
+                                Log.d("SignupScreen", "Signup successful")
                                 navController.navigate("profile") {
                                     popUpTo("login") { inclusive = true }
                                 }

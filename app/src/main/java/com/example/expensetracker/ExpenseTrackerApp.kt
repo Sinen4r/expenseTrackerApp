@@ -67,7 +67,7 @@ fun ExpenseTrackerApp(viewModel: StatsViewModel,authViewModel: AuthViewModel) {
             startDestination = Screen.Login.route,
             modifier = Modifier.padding(padding)
         ) {
-            composable(Screen.Home.route) { HomeScreen(navController) }
+            composable(Screen.Home.route) { HomeScreen(navController = navController, viewModel = viewModel) }
             composable(Screen.Login.route) { LoginScreen(navController) }
             composable(Screen.AddTransaction.route) { AddTransactionScreen(navController,viewModel = viewModel) }
             composable(Screen.stats.route){StatsScreen(navController,viewModel)}

@@ -93,7 +93,7 @@ fun HomeScreen(navController: NavController, viewModel: StatsViewModel) {
         Spacer(modifier = Modifier.height(24.dp))
 
         // Spending Chart - Now using specific expense data
-        SpendingSection(transactions = expenseTransactions)
+        SpendingSection(transactions = transactions)
 
         Spacer(modifier = Modifier.height(24.dp))
 

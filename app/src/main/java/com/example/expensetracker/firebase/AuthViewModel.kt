@@ -42,7 +42,7 @@ class AuthViewModel : ViewModel() {
                         "name" to name,
                         "email" to email,
                         "joinDate" to FieldValue.serverTimestamp()
-                    )).await()
+                    ))
                 onComplete(true, null)
             } catch (e: Exception) {
                 onComplete(false, e.message ?: "Signup failed")
