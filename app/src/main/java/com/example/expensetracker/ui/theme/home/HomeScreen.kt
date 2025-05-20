@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Stroke
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.foundation.Canvas
 
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +35,8 @@ fun HomeScreen(navController: NavController, viewModel: StatsViewModel) {
 
     // Collect transaction data
     val transactions by viewModel.getRecentTransactions().collectAsState(emptyList())
+    // Specifically collect expense transactions for the donut chart
+    val expenseTransactions by viewModel.getExpenseTransactions().collectAsState(emptyList())
 
     // Calculate totals
     val totalIncome by viewModel.getIncomeTransactions()
@@ -90,8 +92,8 @@ fun HomeScreen(navController: NavController, viewModel: StatsViewModel) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Spending Chart - Now using real data
-        SpendingSection(transactions = transactions)
+        // Spending Chart - Now using specific expense data
+        SpendingSection(transactions = expenseTransactions)
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -234,7 +236,7 @@ fun SpendingSection(transactions: List<Transaction>) {
             DonutChartWithData(transactions = transactions)
         } else {
             Text(
-                text = "No transaction data available",
+                text = "No expense data available",
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
@@ -247,7 +249,8 @@ fun SpendingSection(transactions: List<Transaction>) {
 
 @Composable
 fun DonutChartWithData(transactions: List<Transaction>) {
-    // Filter only expense transactions
+    // Filter only expense transactions - this is no longer needed since we're now passing in
+    // only expense transactions, but kept for safety
     val expenseTransactions = transactions.filter { it.type == "expense" }
 
     // Group transactions by category and calculate totals
@@ -265,14 +268,22 @@ fun DonutChartWithData(transactions: List<Transaction>) {
         emptyMap()
     }
 
-    // Define colors for categories
+    // Define colors for categories - extended for more categories
     val categoryColors = mapOf(
         "Groceries" to Color(0xFF3366CC),
         "Food" to Color(0xFFFF9900),
         "Transport" to Color(0xFF109618),
+        "Transportation" to Color(0xFF109618), // Alias for Transport
         "Entertainment" to Color(0xFFDC3912),
-        "Others" to Color(0xFF990099)
+        "Shopping" to Color(0xFFFF69B4),
+        "Utilities" to Color(0xFF9370DB),
+        "Housing" to Color(0xFF20B2AA),
+        "Others" to Color(0xFF990099),
+        "Other" to Color(0xFF990099) // Alias for Others
     )
+
+    // Capture the background color from the MaterialTheme before Canvas
+    val backgroundColor = MaterialTheme.colorScheme.background
 
     Row(
         modifier = Modifier
@@ -288,9 +299,11 @@ fun DonutChartWithData(transactions: List<Transaction>) {
                 .weight(1f),
             contentAlignment = Alignment.Center
         ) {
+            // Canvas for the donut chart
             Canvas(modifier = Modifier.size(150.dp)) {
                 val innerRadius = size.minDimension * 0.3f // 30% of diameter for hole
                 var startAngle = 0f
+
                 if (categoryPercentages.isEmpty()) {
                     // Draw grey ring for empty state
                     drawArc(
@@ -315,10 +328,22 @@ fun DonutChartWithData(transactions: List<Transaction>) {
                         startAngle += sweepAngle
                     }
                 }
-                // Draw inner circle to create donut hole
+
+                // Draw inner circle to create donut hole - now using the captured background color
                 drawCircle(
-                    color = MaterialTheme.colorScheme.background,
+                    color = backgroundColor,
                     radius = innerRadius
+                )
+            }
+
+            // Show total expense in the center if data exists - as a separate composable
+            if (categoryPercentages.isNotEmpty()) {
+                // This Text is now a sibling of Canvas in the Box, not inside Canvas
+                Text(
+                    text = "${String.format("%.0f", total)}",
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
             }
         }
