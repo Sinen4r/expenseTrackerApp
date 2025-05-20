@@ -43,6 +43,7 @@ import androidx.navigation.NavController
 import com.example.expensetracker.data.Transaction
 import com.example.expensetracker.navigation.Screen
 import com.example.expensetracker.ui.theme.components.IncomeExpenseChart
+import java.util.Calendar
 
 @Composable
 fun StatsScreen(navController: NavController, viewModel: StatsViewModel) {
@@ -51,7 +52,7 @@ fun StatsScreen(navController: NavController, viewModel: StatsViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFEEEE))
+            .background(Color(0xFFFFF8F8))
     ) {
         Column(
             modifier = Modifier
@@ -83,15 +84,13 @@ fun StatsScreen(navController: NavController, viewModel: StatsViewModel) {
             Spacer(modifier = Modifier.height(24.dp))
 
             // Daily Transactions Chart
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-            ) {
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(16.dp),
+
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = "DAILY TRANSACTIONS",
@@ -103,23 +102,25 @@ fun StatsScreen(navController: NavController, viewModel: StatsViewModel) {
 
                     IncomeExpenseChart(transactions = transactions)
                 }
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Transaction Logging
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-            ) {
-                Column(
+            Divider(
+                color = Color.LightGray, // Or use MaterialTheme.colorScheme.outline
+                thickness = 1.dp,  // Adjust thickness
+                modifier = Modifier.padding(vertical = 8.dp) // Add spacing
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = "TRANSACTION LOGGING",
+                        text = "Transactions History",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -128,7 +129,7 @@ fun StatsScreen(navController: NavController, viewModel: StatsViewModel) {
 
                     TransactionList(transactions = transactions)
                 }
-            }
+
         }
 
 
@@ -139,7 +140,7 @@ fun StatsScreen(navController: NavController, viewModel: StatsViewModel) {
 @Composable
 fun TransactionList(transactions: List<Transaction>) {
     LazyColumn {
-        items(transactions.asReversed()) { transaction ->
+        items(transactions) { transaction ->
             TransactionItem(transaction)
             Divider(color = Color.LightGray, thickness = 0.5.dp)
         }
@@ -183,13 +184,14 @@ fun TransactionItem(transaction: Transaction) {
                 fontSize = 12.sp,
                 color = Color.Gray
             )
+
         }
 
         // Amount
         Text(
             text = if (transaction.type == "income") "+${transaction.amount}TND" else "-${transaction.amount}TND",
             fontWeight = FontWeight.Bold,
-            color = if (transaction.type == "income") Color(0xFF32CD32) else Color.Black
+            color = if (transaction.type == "income") Color(0xFF32CD32) else Color.Red
         )
     }
 

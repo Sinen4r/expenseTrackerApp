@@ -16,6 +16,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.expensetracker.agenda.AgendaScreen
+import com.example.expensetracker.firebase.AuthViewModel
 import com.example.expensetracker.navigation.BottomNavBar
 import com.example.expensetracker.navigation.Screen
 import com.example.expensetracker.ui.theme.transaction.AddTransactionScreen
@@ -31,7 +33,7 @@ import com.example.expensetracker.ui.theme.stats.StatsViewModel
 private const val TAG = "NavigationUtils"
 
 @Composable
-fun ExpenseTrackerApp(viewModel: StatsViewModel) {
+fun ExpenseTrackerApp(viewModel: StatsViewModel,authViewModel: AuthViewModel) {
 
     val navController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
@@ -39,12 +41,15 @@ fun ExpenseTrackerApp(viewModel: StatsViewModel) {
 
     // Make this a Composable-aware calculation
     val isAuthRoute = remember(currentRoute) {
+        currentRoute in listOf(Screen.Login.route, Screen.signup.route,Screen.agenda.route,Screen.profile.route)
+    }
+    val routea = remember(currentRoute) {
         currentRoute in listOf(Screen.Login.route, Screen.signup.route)
     }
 
 
     Scaffold(
-        bottomBar =  {if (!isAuthRoute) {
+        bottomBar =  {if (!routea) {
             BottomNavBar(navController)
         }
         },
@@ -68,6 +73,7 @@ fun ExpenseTrackerApp(viewModel: StatsViewModel) {
             composable(Screen.stats.route){StatsScreen(navController,viewModel)}
             composable(Screen.signup.route){ SignupScreen(navController) }
             composable(Screen.profile.route){profileScreen(navController)}
+            composable(Screen.agenda.route){AgendaScreen(navController)}
 
         }
     }

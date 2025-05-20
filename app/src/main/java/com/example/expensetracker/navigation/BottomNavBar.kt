@@ -30,7 +30,7 @@ fun BottomNavBar(navController: NavController) {
             label = "Statistics"
         ),
         BottomNavItem(
-            route = Screen.Login.route,
+            route = Screen.agenda.route,
             icon = Icons.Default.DateRange,
             label = "Caledner"
         ) ,

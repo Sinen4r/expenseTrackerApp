@@ -11,7 +11,15 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+# Firebase rules
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
+-keepnames class com.google.firebase.** { *; }
+-keepnames class com.google.android.gms.** { *; }
 
+# If using Firestore
+-keepattributes Signature
+-keepattributes *Annotation*
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable

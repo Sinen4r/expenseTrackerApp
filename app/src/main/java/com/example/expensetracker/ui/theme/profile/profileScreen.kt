@@ -16,13 +16,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.expensetracker.navigation.Screen
+import com.example.expensetracker.firebase.AuthViewModel
+import com.example.expensetracker.firebase.UserRepository
+
+
 
 @Composable
-fun profileScreen(navController: NavController) {
+fun profileScreen(navController: NavController,authViewModel: AuthViewModel = viewModel()
+) {
     val scrollState = rememberScrollState()
-
+    val userRepository = remember { UserRepository() }
+    val currentUser = authViewModel.currentUser
+    val userProfile by userRepository.userProfileFlow.collectAsState(initial = null)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -44,12 +51,14 @@ fun profileScreen(navController: NavController) {
         }
 
         // User Profile Info
-        UserProfileSection()
-
+        UserProfileSection(
+            name = userProfile?.name ?: "Guest",
+            email = currentUser?.email ?: "Not logged in",
+            joinDate = (userProfile?.joinDate ?: "").toString()
+        )
         Spacer(modifier = Modifier.height(24.dp))
 
         // User Info List
-        ProfileInfoList()
 
         Spacer(modifier = Modifier.height(48.dp))
 
@@ -62,9 +71,9 @@ fun profileScreen(navController: NavController) {
         ) {
             Button(
                 onClick = {
-                    // Navigate to login page
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
+                    userRepository.signOut()
+                    navController.navigate("login") {
+                        popUpTo(0)
                     }
                 },
                 modifier = Modifier
@@ -87,7 +96,7 @@ fun profileScreen(navController: NavController) {
 }
 
 @Composable
-fun UserProfileSection() {
+fun UserProfileSection(name: String, email: String, joinDate: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -114,14 +123,19 @@ fun UserProfileSection() {
 
         // Username
         Text(
-            text = "mohamed_ali",
+            text = name,
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold
             )
         )
 
         Text(
-            text = "Joined: March 2023",
+            text = joinDate,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+        )
+        Text(
+            text = email,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
         )

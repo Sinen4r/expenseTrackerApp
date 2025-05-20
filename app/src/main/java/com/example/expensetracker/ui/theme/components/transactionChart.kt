@@ -71,7 +71,7 @@ fun IncomeExpenseChart(transactions: List<Transaction>) {
     AndroidView(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp) // Set a fixed height
+            .height(250.dp) // Set a fixed height
             .padding(8.dp),
         factory = { context ->
             LineChart(context).apply {

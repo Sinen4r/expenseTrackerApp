@@ -8,6 +8,8 @@ sealed class Screen(val route: String) {
     object signup :Screen("signup")
     object profile :Screen("profile")
     object stats :Screen("stats")
+    object agenda :Screen("agenda")
+
 
 
     // For passing arguments (e.g., "details/{id}")

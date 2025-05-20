@@ -6,18 +6,27 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,15 +34,21 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.expensetracker.firebase.AuthViewModel
+import com.example.expensetracker.firebase.UserRepository
 import com.example.expensetracker.navigation.Screen
 import com.example.expensetracker.ui.theme.components.PrimaryButton
 import com.example.expensetracker.ui.theme.components.SimpleTextField
 
 @Composable
-fun LoginScreen(navController: NavController, viewModel: UserInputViewModel = viewModel()) {
-    val emailState by viewModel.emailState
-    val passwordState by viewModel.passwordState
-    val loginState by viewModel.loginState
+fun LoginScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel = viewModel()
+) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -50,93 +65,62 @@ fun LoginScreen(navController: NavController, viewModel: UserInputViewModel = vi
         )
 
         SimpleTextField(
-            value = emailState.text,
-            onValueChange = { viewModel.onEmailChange(it) },
+            value = email,
+            onValueChange = { email=it},
             label = "Email",
-            isError = emailState.error != null,
-            errorMessage = emailState.error
+
         )
         Spacer(modifier = Modifier.height(16.dp))
 
         SimpleTextField(
-            value = passwordState.text,
-            onValueChange = { viewModel.onPasswordChange(it) },
+            value = password,
+            onValueChange = { password=it },
             label = "Password",
             isPassword = true,
-            isError = passwordState.error != null,
-            errorMessage = passwordState.error
+
         )
         Spacer(modifier = Modifier.height(26.dp))
 
-        // Show buttons or loading indicator based on loginState
-        when (loginState) {
-            is LoginState.Loading -> {
-                CircularProgressIndicator(color = Color.White)
-            }
-            else -> {
-                PrimaryButton(
-                    text = "Log In",
-                    onClick = {
-                        viewModel.performLogin() // Login action only on button press
-                    }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "or",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                PrimaryButton(
-                    text = "Sign Up",
-                    onClick =
-                        { navController.navigate(Screen.signup.route) } // Signup action only on button press
 
-                )
-            }
+        if (!isLoading) {
+            PrimaryButton(
+                text = "Log In",
+                onClick = {
+                    if (email.isBlank() || password.isBlank()) {
+                        error = "Please fill all fields"
+                    } else {
+                        isLoading = true
+                        authViewModel.signIn(email, password) { success, message ->
+                            isLoading = false
+                            if (success) {
+                                navController.navigate("profile") {
+                                    popUpTo("login") { inclusive = true }
+                                }
+                            } else {
+                                error = message
+                            }
+                        }
+                    }
+                },
+            )
         }
 
-        // Handle login/signup result
-        when (loginState) {
-            is LoginState.Success -> {
-                LaunchedEffect(loginState) {
-                    navController.navigate("home") {
-                        popUpTo("login") { inclusive = true }
-                    }
-                    viewModel.resetLoginState()
-                }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TextButton(
+            onClick = {
+                navController.navigate("signup")
             }
-            is LoginState.Error -> {
-                Snackbar(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    action = {
-                        Text(
-                            text = "Dismiss",
-                            color = Color.White,
-                            modifier = Modifier.clickable { viewModel.resetLoginState() }
-                        )
-                    }
-                ) {
-                    Text(
-                        text = (loginState as LoginState.Error).message,
-                        color = Color.White
-                    )
-                }
-            }
-            else -> {}
+        ) {
+            Text("Don't have an account? Sign Up", color = Color.White)
+        }
+
+        error?.let {
+            Text(
+                text = it,
+                color = Color.Red,
+                modifier = Modifier.padding(8.dp)
+            )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    LoginScreen(
-        navController = rememberNavController(),
-        viewModel = UserInputViewModel().apply {
-            onEmailChange("test@example.com")
-            onPasswordChange("password123")
-        }
-    )
 }

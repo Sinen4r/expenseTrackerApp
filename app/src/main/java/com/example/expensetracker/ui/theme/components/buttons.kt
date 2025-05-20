@@ -2,7 +2,9 @@ package com.example.expensetracker.ui.theme.components
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -22,7 +24,7 @@ fun PrimaryButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.defaultMinSize(minWidth = 150.dp) ,
+        modifier = modifier.fillMaxWidth(0.6f).widthIn(min = 150.dp, max = 300.dp) ,
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,
