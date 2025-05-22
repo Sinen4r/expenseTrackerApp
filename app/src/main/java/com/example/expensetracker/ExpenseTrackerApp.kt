@@ -29,6 +29,7 @@ import com.example.expensetracker.ui.theme.stats.StatsScreen
 import com.example.expensetracker.ui.theme.stats.StatsViewModel
 
 
+// ExpenseTrackerApp.kt
 private const val TAG = "NavigationUtils"
 
 @Composable
@@ -38,6 +39,7 @@ fun ExpenseTrackerApp(viewModel: StatsViewModel,authViewModel: AuthViewModel) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
+    // Make this a Composable-aware calculation
     val isAuthRoute = remember(currentRoute) {
         currentRoute in listOf(Screen.Login.route, Screen.signup.route,Screen.agenda.route,Screen.profile.route)
     }
@@ -65,7 +67,7 @@ fun ExpenseTrackerApp(viewModel: StatsViewModel,authViewModel: AuthViewModel) {
             startDestination = Screen.Login.route,
             modifier = Modifier.padding(padding)
         ) {
-            composable(Screen.Home.route) { HomeScreen(navController,viewModel = viewModel) }
+            composable(Screen.Home.route) { HomeScreen(navController) }
             composable(Screen.Login.route) { LoginScreen(navController) }
             composable(Screen.AddTransaction.route) { AddTransactionScreen(navController,viewModel = viewModel) }
             composable(Screen.stats.route){StatsScreen(navController,viewModel)}

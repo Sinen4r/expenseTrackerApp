@@ -64,13 +64,7 @@ fun StatsScreen(navController: NavController, viewModel: StatsViewModel) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { /* Open drawer */ }) {
-                    Icon(
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = "Menu",
-                        tint = Color.Black
-                    )
-                }
+
                 Text(
                     text = "Statistics",
                     fontSize = 24.sp,
