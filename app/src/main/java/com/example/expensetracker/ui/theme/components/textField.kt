@@ -73,7 +73,7 @@ fun SimpleTextField(
         },
         singleLine = true,
         shape = MaterialTheme.shapes.medium,
-        colors = TextFieldDefaults.colors( // Use stable colors API
+        colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
             focusedLabelColor = Color.Gray,

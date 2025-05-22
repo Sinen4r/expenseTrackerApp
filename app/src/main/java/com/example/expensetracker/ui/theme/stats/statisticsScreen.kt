@@ -59,7 +59,6 @@ fun StatsScreen(navController: NavController, viewModel: StatsViewModel) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -77,13 +76,11 @@ fun StatsScreen(navController: NavController, viewModel: StatsViewModel) {
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
-                // Empty spacer to balance the layout
                 Spacer(modifier = Modifier.width(48.dp))
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Daily Transactions Chart
 
                 Column(
                     modifier = Modifier
@@ -106,11 +103,10 @@ fun StatsScreen(navController: NavController, viewModel: StatsViewModel) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Transaction Logging
             Divider(
-                color = Color.LightGray, // Or use MaterialTheme.colorScheme.outline
-                thickness = 1.dp,  // Adjust thickness
-                modifier = Modifier.padding(vertical = 8.dp) // Add spacing
+                color = Color.LightGray,
+                thickness = 1.dp,
+                modifier = Modifier.padding(vertical = 8.dp)
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -163,7 +159,6 @@ fun TransactionItem(transaction: Transaction) {
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Category circle
         Box(
             modifier = Modifier
                 .size(36.dp)
@@ -172,7 +167,6 @@ fun TransactionItem(transaction: Transaction) {
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        // Transaction details
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = transaction.category.replaceFirstChar { it.uppercase() },
@@ -187,7 +181,6 @@ fun TransactionItem(transaction: Transaction) {
 
         }
 
-        // Amount
         Text(
             text = if (transaction.type == "income") "+${transaction.amount}TND" else "-${transaction.amount}TND",
             fontWeight = FontWeight.Bold,

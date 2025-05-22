@@ -50,7 +50,6 @@ fun profileScreen(navController: NavController,authViewModel: AuthViewModel = vi
             )
         }
 
-        // User Profile Info
         UserProfileSection(
             name = userProfile?.name ?: "Guest",
             email = currentUser?.email ?: "Not logged in",
@@ -58,11 +57,9 @@ fun profileScreen(navController: NavController,authViewModel: AuthViewModel = vi
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        // User Info List
 
         Spacer(modifier = Modifier.height(48.dp))
 
-        // Logout Button
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -103,7 +100,6 @@ fun UserProfileSection(name: String, email: String, joinDate: String) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Profile Picture
         Box(
             modifier = Modifier
                 .size(100.dp)
@@ -121,7 +117,6 @@ fun UserProfileSection(name: String, email: String, joinDate: String) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Username
         Text(
             text = name,
             style = MaterialTheme.typography.titleLarge.copy(

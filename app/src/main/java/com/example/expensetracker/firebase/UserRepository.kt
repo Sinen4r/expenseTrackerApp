@@ -35,7 +35,7 @@ class UserRepository {
         auth.addAuthStateListener(authStateListener)
 
         awaitClose {
-            auth.removeAuthStateListener(authStateListener) // Pass the same listener instance
+            auth.removeAuthStateListener(authStateListener)
         }
     }
 

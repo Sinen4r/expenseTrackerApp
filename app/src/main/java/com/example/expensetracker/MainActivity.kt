@@ -38,12 +38,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            ExpenseTrackerTheme { // Your theme (defined in Theme.kt)
+            ExpenseTrackerTheme {
                 ExpenseTrackerApp(viewModel,authViewModel)
             }
         }
     }
-    // Temporary test function in your MainActivity
+    // Temporary test function
     fun testAuth() {
         CoroutineScope(Dispatchers.IO).launch {
             try {

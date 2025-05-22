@@ -12,7 +12,6 @@ sealed class Screen(val route: String) {
 
 
 
-    // For passing arguments (e.g., "details/{id}")
     fun withArgs(vararg args: String): String {
         return buildString {
             append(route)

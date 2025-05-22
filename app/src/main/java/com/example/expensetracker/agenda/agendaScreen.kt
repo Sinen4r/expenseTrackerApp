@@ -36,7 +36,7 @@ fun AgendaScreen(navController: NavController) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Add new event */ },
+                onClick = {  },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(Icons.Default.Add, "Add Event")
@@ -49,12 +49,10 @@ fun AgendaScreen(navController: NavController) {
                 .padding(padding)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            // Header with Date Picker
             DateHeader(selectedDate.value) { newDate ->
                 selectedDate.value = newDate
             }
 
-            // Events List
             if (events.isEmpty()) {
                 EmptyAgenda()
             } else {
@@ -79,8 +77,7 @@ fun DateHeader(date: LocalDate, onDateChanged: (LocalDate) -> Unit) {
             fontWeight = FontWeight.Bold
         )
 
-        // Date picker would go here
-        Button(onClick = { /* Show date picker */ }) {
+        Button(onClick = { }) {
             Text("Change Date")
         }
     }
@@ -110,7 +107,6 @@ fun EventCard(event: Event) {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Time indicator
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.width(60.dp)
@@ -130,7 +126,6 @@ fun EventCard(event: Event) {
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Event details
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = event.title,

@@ -60,7 +60,6 @@ fun AddTransactionScreen(navController: NavController, viewModel: StatsViewModel
     val scrollState = rememberScrollState()
 
 
-    // Now we can safely access uid
     val transactionTypes = listOf("Income", "Expense")
     var selectedTransactionType by remember { mutableStateOf(transactionTypes[0]) }
     var expandedTransactionType by remember { mutableStateOf(false) }
@@ -77,7 +76,6 @@ fun AddTransactionScreen(navController: NavController, viewModel: StatsViewModel
     var descriptionText by remember { mutableStateOf("") }
     var isSubmitting by remember { mutableStateOf(false) }
 
-    // Main content with animated entrance
     AnimatedVisibility(
         visible = true,
         enter = fadeIn() + slideInVertically(initialOffsetY = { -40 }),
@@ -89,7 +87,6 @@ fun AddTransactionScreen(navController: NavController, viewModel: StatsViewModel
                 .background(stripePattern)
                 .verticalScroll(scrollState)
         ) {
-            // Top App Bar with elevation animation
             var appBarElevated by remember { mutableStateOf(false) }
             LaunchedEffect(scrollState) {
                 snapshotFlow { scrollState.value }
@@ -110,7 +107,6 @@ fun AddTransactionScreen(navController: NavController, viewModel: StatsViewModel
 
             )
 
-            // Form content with padding animations
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -120,7 +116,6 @@ fun AddTransactionScreen(navController: NavController, viewModel: StatsViewModel
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Transaction Type Dropdown with animation
                 AnimatedContent(
                     targetState = selectedTransactionType,
                     transitionSpec = {
@@ -179,7 +174,6 @@ fun AddTransactionScreen(navController: NavController, viewModel: StatsViewModel
                     }
                 }
 
-                // Value TextField with floating label animation
                 AnimatedVisibility(
                     visible = true,
                     enter = fadeIn() + expandVertically(),
@@ -211,7 +205,6 @@ fun AddTransactionScreen(navController: NavController, viewModel: StatsViewModel
                     )
                 }
 
-                // Category Dropdown with animation
                 AnimatedContent(
                     targetState = Pair(selectedTransactionType, selectedCategory),
                     transitionSpec = {
@@ -269,7 +262,6 @@ fun AddTransactionScreen(navController: NavController, viewModel: StatsViewModel
                     }
                 }
 
-                // Description TextField
                 AnimatedVisibility(
                     visible = true,
                     enter = fadeIn() + expandVertically(),
@@ -295,11 +287,9 @@ fun AddTransactionScreen(navController: NavController, viewModel: StatsViewModel
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Submit Button with loading animation
                 PrimaryButton(
                     text = "Add Transaction",
                     onClick = {
-                        // Validate input
                         if (valueText.isBlank()) {
                             Toast.makeText(context, "Please enter a value", Toast.LENGTH_SHORT).show()
                             return@PrimaryButton
@@ -310,7 +300,6 @@ fun AddTransactionScreen(navController: NavController, viewModel: StatsViewModel
                             return@PrimaryButton
                         }
 
-                        // Create transaction object
                         val transaction = Transaction(
                             amount = amount,
                             type = if (selectedTransactionType == "Income") "income" else "expense",
@@ -319,16 +308,13 @@ fun AddTransactionScreen(navController: NavController, viewModel: StatsViewModel
                             description = descriptionText
                         )
 
-                        // Save to database using ViewModel
                         viewModel.addTransaction(transaction)
 
                         Toast.makeText(context, "Transaction added successfully", Toast.LENGTH_SHORT).show()
 
-                        // Clear fields
                         valueText = ""
                         descriptionText = ""
 
-                        // Navigate back
                         navController.popBackStack()
                     },
                     enabled = valueText.isNotBlank() && !isSubmitting,
@@ -357,7 +343,6 @@ fun AddTransactionScreen(navController: NavController, viewModel: StatsViewModel
     }
 }
 
-// Helper composable for animated elevation app bar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AnimatedElevationAppBar(
@@ -371,7 +356,6 @@ private fun AnimatedElevationAppBar(
         animationSpec = tween(durationMillis = 150)
     )
 
-    // Animate between surface and surface color (can customize these)
     val containerColor by animateColorAsState(
         targetValue = if (elevated) {
             MaterialTheme.colorScheme.surface
@@ -397,7 +381,6 @@ private fun AnimatedElevationAppBar(
         )
     }
 }
-// Helper modifier for scale animation on press
 fun Modifier.scaleInOnPressAnimation(): Modifier = composed {
     var pressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(

@@ -20,7 +20,7 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
     private val dao = db.transactionDao()
     init {
         viewModelScope.launch {
-            if (dao.getTransactionCount() == 0) { // You need to add this DAO function
+            if (dao.getTransactionCount() == 0) {
                 addSampleData()
             }
         }
